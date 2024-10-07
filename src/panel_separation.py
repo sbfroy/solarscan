@@ -1,24 +1,37 @@
+import numpy as np
 import cv2
 
 from data_loader import image_loader
 from preprocessing import prep
 
 
-def detect_edges(image, threshold1, threshold2):
-    edges = cv2.Canny(image, threshold1=threshold1, threshold2=threshold2)
+def detect_edges(image):
+    # gradient intensities below threshold1 are discarded
+    # values above threshold 2 is definitely an edge
+    median = np.median(image)
+    lower = int(max(0, 0.33 * median))
+    upper = int(min(255, 1.6 * median))
+    edges = cv2.Canny(image, threshold1=lower, threshold2=upper)
     return edges
 
-def find_contours(image, original_image):
-    contours, _ = cv2.findContours(image, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE) 
-    contours_image = cv2.drawContours(original_image, contours, -1, (0, 255, 0), 2)
-    return contours_image
+def enhance_edges(edges):
+    kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (3, 3))
+    dilated = cv2.dilate(edges, kernel, iterations=1)
+    return dilated
+
+def find_contours(edges, image):
+    contours, _ = cv2.findContours(edges, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE) 
+    cv2.drawContours(image, contours, -1, (0, 255, 0), 2)
+    return image
     
 
 def main():
-    image = image_loader("src/../data/images/IMG_0492.jpg")
+    image = image_loader("src/../data/images/IMG_0492_closeup.jpg")
+
     preprocessed_image = prep(image)
-    edges = detect_edges(preprocessed_image, threshold1=75, threshold2=150)
-    contours = find_contours(edges, image)
+    edges = detect_edges(preprocessed_image)
+    enhanced_edges = enhance_edges(edges)
+    contours = find_contours(enhanced_edges, image)
   
     cv2.imshow("Contours", contours)
     cv2.waitKey(0)

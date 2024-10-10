@@ -1,6 +1,6 @@
 import cv2
 
-from data_loader import image_loader
+from data_loader import single_image_loader
 
 def prep(image):
     gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY) 

@@ -1,7 +1,7 @@
 import numpy as np
 import cv2
 
-from data_loader import image_loader
+from data_loader import single_image_loader
 from preprocessing import prep
 
 
@@ -26,7 +26,7 @@ def find_contours(edges, image):
     
 
 def main():
-    image = image_loader("src/../data/images/IMG_0492_closeup.jpg")
+    image = single_image_loader("C:/Users/Philip Haugen/solarscan/data/images/Clean/Clean (25).jpg")
 
     preprocessed_image = prep(image)
     edges = detect_edges(preprocessed_image)

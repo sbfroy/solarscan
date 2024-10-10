@@ -26,7 +26,7 @@ def find_contours(edges, image):
     
 
 def main():
-    image = single_image_loader("C:/Users/Philip Haugen/solarscan/data/images/Clean/Clean (25).jpg")
+    image = single_image_loader("C:/Users/Philip Haugen/solarscan/data/images/Clean/Clean (30).jpg")
 
     preprocessed_image = prep(image)
     edges = detect_edges(preprocessed_image)

@@ -40,34 +40,25 @@ def isolate_panel(image):
         image (): Unprocessed image from data_loader.py
 
     Returns:
-        numpy.ndarray: an adjustable array that reflects how many and the location of panels. 
-        along with info about the panel cluster.
+        numpy.ndarray: The isolated panel.
 
     """
     preprocessed_image = prep(image)
     edges = detect_edges(preprocessed_image)
     contours = find_contours(edges, image)
+    sorted_contours = sorted(contours, key=cv2.contourArea, reverse=True)
 
     panel = None
-    biggest_area = 0
 
-    for contour in contours:
-        area = cv2.contourArea(contour)
-        if area > 100000:
-            continue
-
-        if area > biggest_area:
-            biggest_area = area
-            x, y, w, h = cv2.boundingRect(contour)
-            panel = image[y:y+h, x:x+w]
-    
-    panel = cv2.resize(panel, IMG_SIZE)
+    x, y, w, h = cv2.boundingRect(sorted_contours[1]) # ignores the largest contour (the whole image)
+    panel = image[y:y+h, x:x+w] # crops the panel from the image
+    panel = cv2.resize(panel, IMG_SIZE) 
 
     return panel
     
 
 def main():
-
+    # dust (90).jpg
     image = single_image_loader("src/../data/images/Dusty/Dust (90).jpg")
     panel = isolate_panel(image)
 

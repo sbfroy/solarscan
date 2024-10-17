@@ -118,7 +118,7 @@ def main():
 
     # dust (90).jpg
     # Dust (130).jpg
-    image = single_image_loader(img_path)
+    image = single_image_loader(str(img_path))
     panels = isolate_panels(image)
 
     for panel in panels:

@@ -1,7 +1,7 @@
 import cv2
 import os
 
-IMG_SIZE = (512, 512)
+from config import IMG_SIZE
 
 def resize(image):
     return cv2.resize(image, IMG_SIZE)

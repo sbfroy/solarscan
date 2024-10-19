@@ -4,6 +4,7 @@ import os
 from config import IMG_SIZE
 
 def resize(image):
+    # TODO: Add error handling for when image is not there.
     return cv2.resize(image, IMG_SIZE)
 
 

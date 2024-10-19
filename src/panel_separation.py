@@ -6,7 +6,8 @@ from tqdm import tqdm
 
 from data_loader import single_image_loader
 from preprocessing import prep
-from config import IMG_SIZE
+
+# TODO: Add errors for when image is not loaded properly.
 
 hsv_range = {
     'h': (70, 160),        
@@ -114,7 +115,7 @@ def isolate_panels(image):
 def main():
 
     base_dir = os.path.dirname(__file__)
-    img_path = Path(base_dir).parent / "data/images/Dusty/dust (90).jpg"
+    img_path = Path(base_dir).parent / "data/images/train/Dusty/dust (60).jpg"
 
     # dust (90).jpg
     # Dust (130).jpg

@@ -1,39 +1,42 @@
 import torch
 import torch.nn as nn
-import torch.optim as optim
-from torch.utils.data import DataLoader
-from torchvision import datasets, transforms
-import cv2
-import os
-from pathlib import Path
+from torchvision import models
+import pytorch_lightning as pl
+import torch.nn.functional as F
 
 from config import IMG_SIZE
-from panel_separation import isolate_panels
+
+# TODO: Maybe only use a train and val dataset. 90/10 split. add a test set later.
+# TODO: Since little data is available, maybe use k-fold cross validation.
 
 
+class solarPanelClassifier(pl.LightningModule):
+    def __init__(self, num_classes):
+        super(solarPanelClassifier, self).__init__()
+        self.model = models.resnet50(pretrained=True)
+        # Replace the final layer with our number of classes
+        self.model.fc = nn.Linear(self.model.fc.in_features, num_classes) 
 
+    def forward(self, x):
+        return self.model(x)
+    
+    def training_step(self, batch, batch_idx):
+        x, y = batch
+        y_hat = self(x)
+        loss = F.cross_entropy(y_hat, y)
+        acc = (torch.argmax(y_hat, dim=1) == y).float().mean()
+        self.log('train_loss', loss)
+        self.log('train_acc', acc)
+        return loss
 
+    def validation_step(self, batch, batch_idx):
+        x, y = batch
+        y_hat = self(x)
+        loss = F.cross_entropy(y_hat, y)
+        acc = (torch.argmax(y_hat, dim=1) == y).float().mean()
+        self.log('val_loss', loss)
+        self.log('val_acc', acc)
 
-
-
-def model():
-    # test different pre-trained models, like YOLOv8, ImageNet, etc.
-    pass
-
-
-# Important to resize all the images ti IMG_SIZE
-
-
-def main():
-
-    base_dir = os.path.dirname(__file__)
-    img_path = Path(base_dir).parent / "data/images/Dusty/dust (37).jpg"
-
-    image = isolate_panels(img_path)
-
-    cv2.imshow("image", image)
-    cv2.waitKey(0)
-    cv2.destroyAllWindows()
-
-if __name__ == "__main__":
-    main()
+    def configure_optimizers(self):
+        optimizer = torch.optim.Adam(self.parameters(), lr=0.001)
+        return optimizer

@@ -4,7 +4,7 @@ from torchvision import models
 import pytorch_lightning as pl
 import torch.nn.functional as F
 
-from config import LEARING_RATE
+from config import LEARNING_RATE
 
 
 class SOLARSCANMODEL(pl.LightningModule):
@@ -42,5 +42,5 @@ class SOLARSCANMODEL(pl.LightningModule):
         self.log('test_acc', acc, prog_bar=True)
 
     def configure_optimizers(self):
-        optimizer = torch.optim.Adam(self.parameters(), lr=LEARING_RATE)
+        optimizer = torch.optim.Adam(self.parameters(), lr=LEARNING_RATE)
         return optimizer

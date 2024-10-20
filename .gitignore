@@ -20,3 +20,4 @@ dist/
 *.lock     
 logs/        
 docs/
+lightning_logs/

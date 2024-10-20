@@ -11,7 +11,6 @@ class SOLARSCANMODEL(pl.LightningModule):
     def __init__(self, num_classes):
         super(SOLARSCANMODEL, self).__init__()
         self.model = models.resnet50(pretrained=True)
-        # Replace the final layer with our number of classes
         self.model.fc = nn.Linear(self.model.fc.in_features, num_classes) 
 
     def forward(self, x):

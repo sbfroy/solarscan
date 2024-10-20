@@ -13,6 +13,7 @@ sys.path.append(str(base_dir))
 from model import SOLARSCANMODEL
 from config import IMG_SIZE
 
+
 checkpoint_callback = pl.callbacks.ModelCheckpoint(
     monitor='val_loss',
     dirpath=base_dir / 'checkpoints',

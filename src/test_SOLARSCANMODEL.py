@@ -8,29 +8,28 @@ import torch
 base_dir = Path(os.getcwd())
 
 from model import SOLARSCANMODEL
-from config import IMG_SIZE
+from config import IMG_SIZE, BATCH_SIZE, LEARNING_RATE
 
-data_transforms = {
-    'test': transforms.Compose([
+transform = transforms.Compose([
                 transforms.Resize(IMG_SIZE),
                 transforms.ToTensor()
-            ])      
-    }
+            ])
 
 image_datasets = {
-    'test': datasets.ImageFolder(base_dir / 'data/images/test', data_transforms['test'])
+    'test': datasets.ImageFolder(base_dir / 'data/images/test', transform)
 }
 
 dataloaders = {
-    'test': DataLoader(image_datasets['test'], batch_size=4, shuffle=False)
+    'test': DataLoader(image_datasets['test'], batch_size=BATCH_SIZE, shuffle=False)
 }
 
 class_names = image_datasets['test'].classes
 num_classes = len(class_names)
 
-model = SOLARSCANMODEL(num_classes)
+model = SOLARSCANMODEL(num_classes, learning_rate=LEARNING_RATE
+)
 
-model.load_state_dict(torch.load(base_dir / 'src/SOLARSCANMODEL_RESNET50_weights.pth', map_location=torch.device('cpu')))
+model.load_state_dict(torch.load(base_dir / 'src/SOLARSCANMODEL_RESNET50_weights_v4.pth', map_location=torch.device('cpu')))
 model.eval()
 
 trainer = pl.Trainer()

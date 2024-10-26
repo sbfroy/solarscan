@@ -29,7 +29,7 @@ num_classes = len(class_names)
 model = SOLARSCANMODEL(num_classes, learning_rate=LEARNING_RATE
 )
 
-model.load_state_dict(torch.load(base_dir / 'src/SOLARSCANMODEL_RESNET50_weights_v4.pth', map_location=torch.device('cpu')))
+model.load_state_dict(torch.load(base_dir / 'src/checkpoints/SOLARSCANMODEL_RESNET50_weights_v5.pth', map_location=torch.device('cpu')))
 model.eval()
 
 trainer = pl.Trainer()

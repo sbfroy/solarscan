@@ -9,7 +9,7 @@
 # ####################################################################
 
 1. **Find the best checkpoints**
-!ls solarscan/solarscan/src/checkpoints
+!ls solarscan/solarscan/src/tmp/checkpoints
 
 2. **Save tp .pth** 
 num_classes = len(image_datasets['train'].classes)

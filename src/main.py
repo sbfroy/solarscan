@@ -18,6 +18,8 @@ import config
 importlib.reload(model)
 importlib.reload(config)
 
+#TODO: Do some hyperparameter training with optuna
+
 checkpoint_callback = pl.callbacks.ModelCheckpoint(
     monitor='val_loss_epoch',
     dirpath=base_dir / 'tmp/checkpoints',

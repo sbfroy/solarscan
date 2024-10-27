@@ -1,3 +1,5 @@
+import importlib
+
 from torch.utils.data import DataLoader
 from torchvision import datasets, transforms
 from pathlib import Path
@@ -10,13 +12,15 @@ import os
 base_dir = Path(os.getcwd()) / 'solarscan/solarscan/src'
 sys.path.append(str(base_dir))
 
-from model import SOLARSCANMODEL
-from config import IMG_SIZE, BATCH_SIZE, LEARNING_RATE
+import model
+import config
 
+importlib.reload(model)
+importlib.reload(config)
 
 checkpoint_callback = pl.callbacks.ModelCheckpoint(
     monitor='val_loss_epoch',
-    dirpath=base_dir / 'checkpoints',
+    dirpath=base_dir / 'tmp/checkpoints',
     filename='SOLARSCANMODEL-{epoch:02d}-{val_loss_epoch:.2f}',
     save_top_k=3,
     mode='min'
@@ -29,7 +33,7 @@ early_stop_callback = pl.callbacks.EarlyStopping(
 )
 
 transform = transforms.Compose([
-                transforms.Resize(IMG_SIZE),
+                transforms.Resize(config.IMG_SIZE),
                 transforms.ToTensor()
             ])
 
@@ -39,14 +43,19 @@ image_datasets = {
 }
 
 dataloaders = {
-    'train': DataLoader(image_datasets['train'], batch_size=BATCH_SIZE, shuffle=True),
-    'val': DataLoader(image_datasets['val'], batch_size=BATCH_SIZE, shuffle=False)
+    'train': DataLoader(image_datasets['train'], batch_size=config.BATCH_SIZE, shuffle=True),
+    'val': DataLoader(image_datasets['val'], batch_size=config.BATCH_SIZE, shuffle=False)
 }
 
 class_names = image_datasets['train'].classes
 num_classes = len(class_names)
 
-model = SOLARSCANMODEL(num_classes, learning_rate=LEARNING_RATE)
+model = model.SOLARSCANMODEL(
+    num_classes, 
+    learning_rate=config.LEARNING_RATE, 
+    patience=config.LR_PATIENCE, 
+    factor=config.LR_FACTOR
+    )
 
-trainer = pl.Trainer(max_epochs=35, callbacks=[checkpoint_callback, early_stop_callback])
+trainer = pl.Trainer(max_epochs=5, callbacks=[checkpoint_callback, early_stop_callback])
 trainer.fit(model, dataloaders['train'], dataloaders['val'])

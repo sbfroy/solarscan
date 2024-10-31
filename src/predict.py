@@ -30,21 +30,28 @@ model = SOLARSCANMODEL(
 model.load_state_dict(torch.load(Path(base_dir) / 'checkpoints/SOLARSCANMODEL_RESNET50_weights_v6.pth', map_location=torch.device('cpu')))
 model.eval()
 
-img_path = Path(base_dir).parent / "data/images/val/Clean/Clean (17).jpg"
-image = single_image_loader(img_path)
-panels = isolate_panels(image)
+"data/images/val/Clean/Clean (17).jpg"
 
-cv2.imshow("", image)
+"data/images/train/Dusty/Dust (130).jpg"
+
+"data/images/train/Dusty/Dust (153).jpg"
+
+# "data/images/test/Clean/Clean (127).jpg" FAILS
+# "data/images/test/Clean/Clean (184).jpg" FAILS (ISOLATE A FRACTION OF PANEL)
+
+img_path = Path(base_dir).parent / "data/images/test/Bird-drop/Bird (160).jpg"
+image = single_image_loader(img_path)
+panel = isolate_panels(image)
+
+cv2.imshow("image", image)
 cv2.waitKey(0)
 cv2.destroyAllWindows()
 
-if panels:
-    image = panels[0] 
-else: 
-    print('No panels found.')
-    print('Showing model whole picture.')
+cv2.imshow("panel", panel)
+cv2.waitKey(0)
+cv2.destroyAllWindows()
 
-image = Image.fromarray(image) # Ensure it is a PIL image
+image = Image.fromarray(panel) # Ensure it is a PIL image
 image = transform(image).unsqueeze(0)
 
 with torch.no_grad():

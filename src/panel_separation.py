@@ -7,11 +7,12 @@ from tqdm import tqdm
 from data_loader import single_image_loader
 from preprocessing import prep
 
-# TODO: Add errors for when image is not loaded properly.
 
 hsv_range = {
-    'h': (70, 160),        
-    's': (0, 70), 
+    #'h': (70, 160),  
+    'h': (70, 160),  
+    #'s': (0, 70),       
+    's': (0, 90), 
     #'v': (0, 100)       
 }
 
@@ -88,44 +89,57 @@ def isolate_panels(image):
         image (): Unprocessed image from data_loader.py
 
     Returns:
-        numpy.ndarray: Currently returns allt the isolated panels.
+        numpy.ndarray: Returns the "best" image that passes the color_range_check.
     """
     preprocessed_image = prep(image)
     edges = detect_edges(preprocessed_image)
     contours = find_contours(edges, image)
     sorted_contours = sorted(contours, key=cv2.contourArea, reverse=True)
+    # max_area = cv2.contourArea(sorted_contours[0])
 
-    panels = []
-
-    max_area = cv2.contourArea(sorted_contours[0])
-
-    for contour in tqdm(sorted_contours):
+    for contour in tqdm(sorted_contours[1:]):
         x, y, w, h = cv2.boundingRect(contour)
-        area = cv2.contourArea(contour)
+        #area = cv2.contourArea(contour)
 
-        if area > 0.1 * max_area and area < 0.95 * max_area:
+        if color_range_check(image, contour, hsv_range):
+            panel = image[y:y+h, x:x+w]
+            return panel
+
+        """if color_check(image, contour, 45):
+            panel = image[y:y+h, x:x+w]
+            panels.append(panel)"""
+
+        """if area > 0.1 * max_area and area < 0.95 * max_area:
             # Ignores the largest contour (the whole image)
             if color_check(image, contour, 40) and color_range_check(image, contour, hsv_range): # Check if the area has traditional panel color
                 panel = image[y:y+h, x:x+w]
-                panels.append(panel)
+                panels.append(panel)"""
 
-    return panels
+    return None
     
 
 def main():
 
     base_dir = os.path.dirname(__file__)
-    img_path = Path(base_dir).parent / "data/images/train/Dusty/dust (60).jpg"
+    img_path = Path(base_dir).parent / "data/images/train/Dusty/Dust (153).jpg"
 
-    # dust (90).jpg
-    # Dust (130).jpg
+    "data/images/val/Clean/Clean (17).jpg"
+
+    "data/images/train/Dusty/Dust (130).jpg"
+
+    "data/images/train/Dusty/Dust (153).jpg"
+
     image = single_image_loader(img_path)
-    panels = isolate_panels(image)
+    
+    panel = isolate_panels(image)
 
-    for panel in panels:
-        cv2.imshow("", panel)
+    if panel is not None:
+        cv2.imshow("panel", panel)
         cv2.waitKey(0)
         cv2.destroyAllWindows()
+    else:
+        print("No panel found.")
+    
 
 if __name__ == "__main__":
     main()

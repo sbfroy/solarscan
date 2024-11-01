@@ -10,7 +10,7 @@ from preprocessing import prep
 from panel_separation import isolate_panels
 
 from model import SOLARSCANMODEL
-from config import IMG_SIZE, LEARNING_RATE, LR_PATIENCE, LR_FACTOR, CLASS_NAMES
+from config import IMG_SIZE, LEARNING_RATE, LR_PATIENCE, LR_FACTOR, CLASS_NAMES, CLASS_NAMES_2
 
 base_dir = os.path.dirname(__file__)
 
@@ -19,7 +19,7 @@ transform = transforms.Compose([
                 transforms.ToTensor()
             ])
 
-num_classes = len(CLASS_NAMES)
+num_classes = len(CLASS_NAMES_2)
 model = SOLARSCANMODEL(
     num_classes=num_classes, 
     learning_rate=LEARNING_RATE,

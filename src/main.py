@@ -1,10 +1,8 @@
-import importlib
-
 from torch.utils.data import DataLoader
 from torchvision import datasets, transforms
 from pathlib import Path
 import pytorch_lightning as pl
-import torch
+import importlib
 import sys
 import os
 
@@ -40,8 +38,8 @@ transform = transforms.Compose([
             ])
 
 image_datasets = {
-    'train': datasets.ImageFolder(base_dir / '../data/images/train', transform),
-    'val': datasets.ImageFolder(base_dir / '../data/images/val', transform)
+    'train': datasets.ImageFolder(base_dir / '../data_2/images/train', transform),
+    'val': datasets.ImageFolder(base_dir / '../data_2/images/val', transform)
 }
 
 dataloaders = {
@@ -49,8 +47,7 @@ dataloaders = {
     'val': DataLoader(image_datasets['val'], batch_size=config.BATCH_SIZE, shuffle=False)
 }
 
-class_names = image_datasets['train'].classes
-num_classes = len(class_names)
+num_classes = len(config.CLASS_NAMES_2)
 
 model = model.SOLARSCANMODEL(
     num_classes, 
@@ -59,5 +56,5 @@ model = model.SOLARSCANMODEL(
     factor=config.LR_FACTOR
     )
 
-trainer = pl.Trainer(max_epochs=5, callbacks=[checkpoint_callback, early_stop_callback])
+trainer = pl.Trainer(max_epochs=50, callbacks=[checkpoint_callback, early_stop_callback])
 trainer.fit(model, dataloaders['train'], dataloaders['val'])

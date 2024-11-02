@@ -29,8 +29,8 @@ model = SOLARSCANMODEL(
 model.load_state_dict(torch.load(Path(base_dir) / 'checkpoints/SOLARSCANMODEL_weights_2classes.pth', map_location=torch.device('cpu')))
 model.eval()
 
-for image in os.listdir(Path(base_dir).parent / "data_4/test/bad"):
-    img_path = Path(base_dir).parent / "data_4/test/bad" / image
+for image in os.listdir(Path(base_dir).parent / "dataset/test/bad"):
+    img_path = Path(base_dir).parent / "dataset/test/bad" / image
     unprocessed_image = single_image_loader(img_path)
     panel = isolate_panels(unprocessed_image)
 

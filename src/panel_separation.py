@@ -92,18 +92,8 @@ def isolate_panels(image):
     for contour in tqdm(sorted_contours[1:]):
         x, y, w, h = cv2.boundingRect(contour)
 
-        if color_range_check(image, contour, hsv_range):
+        if color_range_check(image, contour, hsv_range) and color_check(image, contour, 57):
             panel = image[y:y+h, x:x+w]
             return panel
-
-        """if color_check(image, contour, 45):
-            panel = image[y:y+h, x:x+w]
-            panels.append(panel)"""
-
-        """if area > 0.1 * max_area and area < 0.95 * max_area:
-            # Ignores the largest contour (the whole image)
-            if color_check(image, contour, 40) and color_range_check(image, contour, hsv_range): # Check if the area has traditional panel color
-                panel = image[y:y+h, x:x+w]
-                panels.append(panel)"""
 
     return None

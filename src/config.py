@@ -4,6 +4,4 @@ BATCH_SIZE = 4
 LR_PATIENCE = 4
 LR_FACTOR = 0.1
 CLASS_NAMES = ['Bird-drop', 'Clean', 'Dusty', 'Electrical-Damage', 'Physical-Damage', 'Snow-Covered']
-CLASS_NAMES_2 = ['good', 'bad']
-
-# TODO: Change class names to be only clean and not clean. 
+CLASS_NAMES_2 = ['bad', 'good']

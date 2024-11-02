@@ -7,7 +7,7 @@ import sys
 import os
 
 # For uia training 
-base_dir = Path(os.getcwd()) / 'solarscan/solarscan/src'
+base_dir = Path(os.getcwd()) #/ 'solarscan/solarscan/src'
 sys.path.append(str(base_dir))
 
 import model
@@ -22,7 +22,6 @@ checkpoint_callback = pl.callbacks.ModelCheckpoint(
     monitor='val_loss_epoch',
     dirpath=base_dir / 'tmp/checkpoints',
     filename='SOLARSCANMODEL-{epoch:02d}-{val_loss_epoch:.2f}',
-    save_top_k=3,
     mode='min'
 )
 
@@ -38,8 +37,8 @@ transform = transforms.Compose([
             ])
 
 image_datasets = {
-    'train': datasets.ImageFolder(base_dir / '../data_2/images/train', transform),
-    'val': datasets.ImageFolder(base_dir / '../data_2/images/val', transform)
+    'train': datasets.ImageFolder(base_dir / 'data_4/train', transform),
+    'val': datasets.ImageFolder(base_dir / 'data_4/val', transform)
 }
 
 dataloaders = {
@@ -56,5 +55,5 @@ model = model.SOLARSCANMODEL(
     factor=config.LR_FACTOR
     )
 
-trainer = pl.Trainer(max_epochs=50, callbacks=[checkpoint_callback, early_stop_callback])
+trainer = pl.Trainer(max_epochs=75, callbacks=[checkpoint_callback, early_stop_callback])
 trainer.fit(model, dataloaders['train'], dataloaders['val'])

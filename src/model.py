@@ -4,8 +4,6 @@ from torchvision import models
 import pytorch_lightning as pl
 import torch.nn.functional as F
 
-# TODO: Change dataset to be only clean and not clean. And change the model to only predict clean and not clean.
-
 class SOLARSCANMODEL(pl.LightningModule):
     def __init__(self, num_classes, learning_rate, patience, factor):
         super(SOLARSCANMODEL, self).__init__()

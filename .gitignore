@@ -21,3 +21,4 @@ dist/
 logs/        
 docs/
 lightning_logs/
+checkpoints/

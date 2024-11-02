@@ -1,19 +1,12 @@
 import cv2
-import os
 import numpy as np
-from pathlib import Path
 from tqdm import tqdm
 
-from data_loader import single_image_loader
 from preprocessing import prep
 
-
 hsv_range = {
-    #'h': (70, 160),  
-    'h': (70, 160),  
-    #'s': (0, 70),       
-    's': (0, 90), 
-    #'v': (0, 100)       
+    'h': (70, 160),       
+    's': (0, 90)       
 }
 
 def detect_edges(preprocessed_image):
@@ -95,11 +88,9 @@ def isolate_panels(image):
     edges = detect_edges(preprocessed_image)
     contours = find_contours(edges, image)
     sorted_contours = sorted(contours, key=cv2.contourArea, reverse=True)
-    # max_area = cv2.contourArea(sorted_contours[0])
 
     for contour in tqdm(sorted_contours[1:]):
         x, y, w, h = cv2.boundingRect(contour)
-        #area = cv2.contourArea(contour)
 
         if color_range_check(image, contour, hsv_range):
             panel = image[y:y+h, x:x+w]
@@ -116,31 +107,3 @@ def isolate_panels(image):
                 panels.append(panel)"""
 
     return None
-    
-
-def main():
-
-    base_dir = os.path.dirname(__file__)
-    img_path = Path(base_dir).parent / "data/images/train/Dusty/Dust (153).jpg"
-
-    "data/images/val/Clean/Clean (17).jpg"
-
-    "data/images/train/Dusty/Dust (130).jpg"
-
-    "data/images/train/Dusty/Dust (153).jpg"
-
-    image = single_image_loader(img_path)
-    
-    panel = isolate_panels(image)
-
-    if panel is not None:
-        cv2.imshow("panel", panel)
-        cv2.waitKey(0)
-        cv2.destroyAllWindows()
-    else:
-        print("No panel found.")
-    
-
-if __name__ == "__main__":
-    main()
-    

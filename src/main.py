@@ -1,13 +1,13 @@
+from pathlib import Path
 from torch.utils.data import DataLoader
 from torchvision import datasets, transforms
-from pathlib import Path
 import pytorch_lightning as pl
 import importlib
 import sys
 import os
 
 # For uia training 
-base_dir = Path(os.getcwd()) #/ 'solarscan/solarscan/src'
+base_dir = Path(os.getcwd()) / 'solarscan/solarscan/src'
 sys.path.append(str(base_dir))
 
 import model
@@ -18,6 +18,7 @@ importlib.reload(config)
 
 #TODO: Do some hyperparameter training with optuna
 
+# Model checkpoints
 checkpoint_callback = pl.callbacks.ModelCheckpoint(
     monitor='val_loss_epoch',
     dirpath=base_dir / 'tmp/checkpoints',
@@ -25,20 +26,22 @@ checkpoint_callback = pl.callbacks.ModelCheckpoint(
     mode='min'
 )
 
+# Early stopping
 early_stop_callback = pl.callbacks.EarlyStopping(
     monitor='val_loss_epoch',
     patience=5,
     mode='min'
 )
 
+# TODO: Add more augmentations because the dataset is small
 transform = transforms.Compose([
                 transforms.Resize(config.IMG_SIZE),
                 transforms.ToTensor()
             ])
 
 image_datasets = {
-    'train': datasets.ImageFolder(base_dir / 'data_4/train', transform),
-    'val': datasets.ImageFolder(base_dir / 'data_4/val', transform)
+    'train': datasets.ImageFolder(base_dir / '../dataset/train', transform),
+    'val': datasets.ImageFolder(base_dir / '../dataset/val', transform)
 }
 
 dataloaders = {

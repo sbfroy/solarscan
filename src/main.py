@@ -16,7 +16,7 @@ import config
 importlib.reload(model)
 importlib.reload(config)
 
-#TODO: Do some hyperparameter training with optuna
+pl.seed_everything(config.SEED)
 
 # Model checkpoints
 checkpoint_callback = pl.callbacks.ModelCheckpoint(
@@ -30,24 +30,32 @@ checkpoint_callback = pl.callbacks.ModelCheckpoint(
 # Early stopping
 early_stop_callback = pl.callbacks.EarlyStopping(
     monitor='val_loss_epoch',
-    patience=5,
+    patience=3,
     mode='min'
 )
 
-# TODO: Add more augmentations because the dataset is small
-transform = transforms.Compose([
+train_transforms = transforms.Compose([
+    transforms.Resize(config.IMG_SIZE),
+    transforms.RandomHorizontalFlip(),
+    transforms.RandomRotation(20),
+    transforms.ToTensor()
+])
+
+val_test_transforms = transforms.Compose([
                 transforms.Resize(config.IMG_SIZE),
                 transforms.ToTensor()
             ])
 
 image_datasets = {
-    'train': datasets.ImageFolder(base_dir / '../dataset/train', transform),
-    'val': datasets.ImageFolder(base_dir / '../dataset/val', transform)
+    'train': datasets.ImageFolder(base_dir / '../dataset/train', train_transforms),
+    'val': datasets.ImageFolder(base_dir / '../dataset/val', val_test_transforms),
+    'test': datasets.ImageFolder(base_dir / 'dataset/test', val_test_transforms)
 }
 
 dataloaders = {
     'train': DataLoader(image_datasets['train'], batch_size=config.BATCH_SIZE, shuffle=True),
-    'val': DataLoader(image_datasets['val'], batch_size=config.BATCH_SIZE, shuffle=False)
+    'val': DataLoader(image_datasets['val'], batch_size=config.BATCH_SIZE, shuffle=False),
+    'test': DataLoader(image_datasets['test'], batch_size=config.BATCH_SIZE, shuffle=False)
 }
 
 num_classes = len(config.CLASS_NAMES)
@@ -59,5 +67,6 @@ model = model.SOLARSCANMODEL(
     factor=config.LR_FACTOR
     )
 
-trainer = pl.Trainer(max_epochs=50, callbacks=[checkpoint_callback, early_stop_callback])
+trainer = pl.Trainer(max_epochs=25, callbacks=[checkpoint_callback, early_stop_callback])
 trainer.fit(model, dataloaders['train'], dataloaders['val'])
+trainer.test(model, dataloaders['test'])

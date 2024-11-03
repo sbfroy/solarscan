@@ -1,7 +1,6 @@
 IMG_SIZE = (512, 512)
-LEARNING_RATE = 0.001
+LEARNING_RATE = 0.0005
 BATCH_SIZE = 4
-LR_PATIENCE = 4
-LR_FACTOR = 0.1
-CLASS_NAMES = ['Bird-drop', 'Clean', 'Dusty', 'Electrical-Damage', 'Physical-Damage', 'Snow-Covered']
-CLASS_NAMES_2 = ['bad', 'good']
+LR_PATIENCE = 2
+LR_FACTOR = 0.5
+CLASS_NAMES = ['bad', 'good']

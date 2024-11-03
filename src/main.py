@@ -50,14 +50,14 @@ dataloaders = {
     'val': DataLoader(image_datasets['val'], batch_size=config.BATCH_SIZE, shuffle=False)
 }
 
-num_classes = len(config.CLASS_NAMES_2)
+num_classes = len(config.CLASS_NAMES)
 
 model = model.SOLARSCANMODEL(
-    num_classes, 
+    num_classes=num_classes, 
     learning_rate=config.LEARNING_RATE, 
     patience=config.LR_PATIENCE, 
     factor=config.LR_FACTOR
     )
 
-trainer = pl.Trainer(max_epochs=75, callbacks=[checkpoint_callback, early_stop_callback])
+trainer = pl.Trainer(max_epochs=50, callbacks=[checkpoint_callback, early_stop_callback])
 trainer.fit(model, dataloaders['train'], dataloaders['val'])

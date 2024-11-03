@@ -18,7 +18,7 @@ transform = transforms.Compose([
                 transforms.ToTensor()
             ])
 
-num_classes = len(CLASS_NAMES_2)
+num_classes = len(CLASS_NAMES)
 model = SOLARSCANMODEL(
     num_classes=num_classes, 
     learning_rate=LEARNING_RATE,
@@ -47,6 +47,6 @@ for image in os.listdir(Path(base_dir).parent / "dataset/test/good"):
         print("Model output:", output)
         _, predicted = torch.max(output, 1)
 
-    predicted = CLASS_NAMES_2[predicted.item()]
+    predicted = CLASS_NAMES[predicted.item()]
 
     print(f'I think the panel is {predicted}.')

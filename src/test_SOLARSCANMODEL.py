@@ -23,7 +23,7 @@ dataloaders = {
     'test': DataLoader(image_datasets['test'], batch_size=BATCH_SIZE, shuffle=False)
 }
 
-num_classes = len(CLASS_NAMES_2)
+num_classes = len(CLASS_NAMES)
 model = SOLARSCANMODEL(
     num_classes=num_classes, 
     learning_rate=LEARNING_RATE,

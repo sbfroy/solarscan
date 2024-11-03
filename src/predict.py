@@ -26,7 +26,7 @@ model = SOLARSCANMODEL(
     factor=LR_FACTOR
 )
 
-model.load_state_dict(torch.load(Path(base_dir) / 'checkpoints/SOLARSCANMODEL_weights_RESNET50_BINARY.pth', map_location=torch.device('cpu')))
+model.load_state_dict(torch.load(Path(base_dir) / 'checkpoints/SOLARSCANMODEL_weights_RESNET18_v2.pth', map_location=torch.device('cpu')))
 model.eval()
 
 for image in os.listdir(Path(base_dir).parent / "dataset/test/good"):
@@ -39,7 +39,9 @@ for image in os.listdir(Path(base_dir).parent / "dataset/test/good"):
     cv2.waitKey(0)
     cv2.destroyAllWindows()
 
-    image = Image.fromarray(panel) # Ensure it is a PIL image
+    # If i make pred on panel it is bad, but good on whole image. 
+    # maybe it does not look enough at the panel to make its predictions
+    image = Image.fromarray(unprocessed_image) # Ensure it is a PIL image
     image = transform(image).unsqueeze(0)
 
     with torch.no_grad():

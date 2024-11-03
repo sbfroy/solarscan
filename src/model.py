@@ -3,14 +3,21 @@ import torch.nn as nn
 from torchvision import models
 import pytorch_lightning as pl
 import torch.nn.functional as F
+import torchmetrics
 
 class SOLARSCANMODEL(pl.LightningModule):
     def __init__(self, num_classes, learning_rate, patience, factor):
         super(SOLARSCANMODEL, self).__init__()
         self.save_hyperparameters()
-        self.model = models.resnet50(pretrained=True)
-        self.model.fc = nn.Linear(self.model.fc.in_features, num_classes) 
+        self.model = models.resnet18(pretrained=True)
+
+        self.model.fc = nn.Sequential(
+            nn.Dropout(0.3), 
+            nn.Linear(self.model.fc.in_features, num_classes)
+        )
+        
         self.learning_rate = learning_rate
+        self.confusion_matrix = torchmetrics.ConfusionMatrix('binary')
 
         # For logging purposes
         self.t_outputs = []
@@ -59,9 +66,18 @@ class SOLARSCANMODEL(pl.LightningModule):
         x, y = batch
         y_hat = self(x)
         loss = F.cross_entropy(y_hat, y)
-        acc = (torch.argmax(y_hat, dim=1) == y).float().mean()
+        preds = torch.argmax(y_hat, dim=1)
+        acc = (preds == y).float().mean()
+
+        self.confusion_matrix(preds, y)
+
         self.log('test_loss', loss, prog_bar=True)
         self.log('test_acc', acc, prog_bar=True)    
+
+    def on_test_epoch_end(self):
+        conf_matrix = self.confusion_matrix.compute().cpu().numpy()
+        print(f'Confusion matrix:\n', conf_matrix)
+        self.confusion_matrix.reset()
 
     def configure_optimizers(self):
         optimizer = torch.optim.Adam(self.parameters(), lr=self.hparams.learning_rate)

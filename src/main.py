@@ -23,7 +23,8 @@ checkpoint_callback = pl.callbacks.ModelCheckpoint(
     monitor='val_loss_epoch',
     dirpath=base_dir / 'tmp/checkpoints',
     filename='SOLARSCANMODEL-{epoch:02d}-{val_loss_epoch:.2f}',
-    mode='min'
+    mode='min',
+    save_top_k=5
 )
 
 # Early stopping

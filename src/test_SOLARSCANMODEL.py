@@ -16,7 +16,7 @@ transform = transforms.Compose([
             ])
 
 image_datasets = {
-    'test': datasets.ImageFolder(base_dir / 'data_4/test', transform)
+    'test': datasets.ImageFolder(base_dir / 'dataset/test', transform)
 }
 
 dataloaders = {
@@ -31,7 +31,7 @@ model = SOLARSCANMODEL(
     factor=LR_FACTOR
 )
 
-model.load_state_dict(torch.load(base_dir / 'src/checkpoints/SOLARSCANMODEL_weights_2classes.pth', map_location=torch.device('cpu')))
+model.load_state_dict(torch.load(base_dir / 'src/checkpoints/SOLARSCANMODEL_weights_RESNET50_BINARY.pth', map_location=torch.device('cpu')))
 model.eval()
 
 trainer = pl.Trainer()

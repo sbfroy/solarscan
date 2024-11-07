@@ -26,7 +26,7 @@ model = SOLARSCANMODEL(
     factor=LR_FACTOR
 )
 
-model.load_state_dict(torch.load(Path(base_dir) / 'checkpoints/SOLARSCANMODEL_weights_RESNET18_v2.pth', map_location=torch.device('cpu')))
+model.load_state_dict(torch.load(Path(base_dir) / 'SOLARSCANMODEL_weights_RESNET18_v2.pth', map_location=torch.device('cpu')))
 model.eval()
 
 for image in os.listdir(Path(base_dir).parent / "dataset/test/good"):

@@ -22,10 +22,3 @@ def multiple_image_loader(folder_path):
             resized = resize(image)
             images.append(resized)
     return images
-
-def main():
-    multiple_image_loader(folder_path="C:/Users/Philip Haugen/solarscan/data/images/Clean")
-    print(len(multiple_image_loader(folder_path="C:/Users/Philip Haugen/solarscan/data/images/Clean")))
-
-if __name__ == "__main__":
-    main()

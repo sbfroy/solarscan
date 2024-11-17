@@ -17,4 +17,8 @@ node_modules/
 *.backup
 build/
 dist/
-*.lock             
+*.lock     
+logs/        
+docs/
+lightning_logs/
+checkpoints/

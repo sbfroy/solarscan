@@ -1,17 +1,12 @@
 import cv2
-import os
 import numpy as np
-from pathlib import Path
 from tqdm import tqdm
 
-from data_loader import single_image_loader
 from preprocessing import prep
-from config import IMG_SIZE
 
 hsv_range = {
-    'h': (70, 160),        
-    's': (0, 70), 
-    #'v': (0, 100)       
+    'h': (70, 160),       
+    's': (0, 90)       
 }
 
 def detect_edges(preprocessed_image):
@@ -87,45 +82,18 @@ def isolate_panels(image):
         image (): Unprocessed image from data_loader.py
 
     Returns:
-        numpy.ndarray: Currently returns allt the isolated panels.
+        numpy.ndarray: Returns the "best" image that passes the color_range_check.
     """
     preprocessed_image = prep(image)
     edges = detect_edges(preprocessed_image)
     contours = find_contours(edges, image)
     sorted_contours = sorted(contours, key=cv2.contourArea, reverse=True)
 
-    panels = []
-
-    max_area = cv2.contourArea(sorted_contours[0])
-
-    for contour in tqdm(sorted_contours):
+    for contour in tqdm(sorted_contours[1:]):
         x, y, w, h = cv2.boundingRect(contour)
-        area = cv2.contourArea(contour)
 
-        if area > 0.1 * max_area and area < 0.95 * max_area:
-            # Ignores the largest contour (the whole image)
-            if color_check(image, contour, 40) and color_range_check(image, contour, hsv_range): # Check if the area has traditional panel color
-                panel = image[y:y+h, x:x+w]
-                panels.append(panel)
+        if color_range_check(image, contour, hsv_range) and color_check(image, contour, 57):
+            panel = image[y:y+h, x:x+w]
+            return panel
 
-    return panels
-    
-
-def main():
-
-    base_dir = os.path.dirname(__file__)
-    img_path = Path(base_dir).parent / "data/images/Dusty/dust (90).jpg"
-
-    # dust (90).jpg
-    # Dust (130).jpg
-    image = single_image_loader(str(img_path))
-    panels = isolate_panels(image)
-
-    for panel in panels:
-        cv2.imshow("", panel)
-        cv2.waitKey(0)
-        cv2.destroyAllWindows()
-
-if __name__ == "__main__":
-    main()
-    
+    return None

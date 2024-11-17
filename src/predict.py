@@ -39,8 +39,6 @@ for image in os.listdir(Path(base_dir).parent / "dataset/test/good"):
     cv2.waitKey(0)
     cv2.destroyAllWindows()
 
-    # If i make pred on panel it is bad, but good on whole image. 
-    # maybe it does not look enough at the panel to make its predictions
     image = Image.fromarray(unprocessed_image) # Ensure it is a PIL image
     image = transform(image).unsqueeze(0)
 
